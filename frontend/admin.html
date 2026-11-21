@@ -21,17 +21,14 @@
       </button>
       <nav id="adminNav" aria-label="Navigasi admin">
         <a class="active" href="#payments"><span aria-hidden="true">✿</span> Validasi Pembayaran</a>
-        <a href="#routes"><span aria-hidden="true">⌖</span> Rute &amp; Jadwal</a>
-        <a href="#vehicles"><span aria-hidden="true">🚌</span> Armada</a>
-        <a href="#drivers"><span aria-hidden="true">☘</span> Kuota Driver</a>
       </nav>
       <a class="sidebar-home" href="index.html">← Kembali ke beranda</a>
     </aside>
     <section class="admin-main">
       <div class="admin-welcome"><div><span class="eyebrow">PANEL PENGELOLA · ECO-JOURNEY</span><h1>Halo, Admin! <span aria-hidden="true">✦</span></h1><p>Semua perjalanan baik dimulai dari persiapan yang rapi.</p></div><div class="admin-mascot" aria-hidden="true">🚌<small>vroom!</small></div></div>
       <p id="adminMessage" role="status" aria-live="polite"></p>
-      <div class="grid-3" id="adminStats"></div>
-      <section id="payments" class="card admin-payments">
+      <div class="grid-3" id="adminStats" hidden></div>
+      <section id="payments" class="card admin-payments" hidden>
         <div class="admin-section-heading"><div><span class="eyebrow">PERLU PERHATIANMU</span><h2>Validasi Pembayaran</h2></div><span class="badge" id="pendingCount">0 menunggu</span></div>
         <div class="table-wrap"><table class="table"><thead><tr><th>Kode</th><th>Penumpang</th><th>Metode</th><th>Status</th><th>Bukti</th><th>Aksi</th></tr></thead><tbody id="paymentTable"></tbody></table></div>
       </section>

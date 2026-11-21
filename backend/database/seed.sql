@@ -1,10 +1,10 @@
 INSERT INTO public.routes_schedules
   (origin_city, destination_city, departure_date, departure_time, arrival_time, base_price, map_coord_x, map_coord_y, image_url)
 VALUES
-  ('Malang','Surabaya','2026-11-20','07:00','09:30',85000,35,55,'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=700&q=80'),
-  ('Surabaya','Yogyakarta','2026-11-21','08:30','15:30',220000,55,38,'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=700&q=80'),
-  ('Malang','Batu','2026-11-20','12:00','12:45',65000,28,48,'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=700&q=80'),
-  ('Banyuwangi','Malang','2026-11-22','06:00','12:00',180000,72,62,'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=700&q=80')
+  ('Malang','Surabaya',CURRENT_DATE + 1,'07:00','09:30',85000,35,55,'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=700&q=80'),
+  ('Surabaya','Yogyakarta',CURRENT_DATE + 2,'08:30','15:30',220000,55,38,'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=700&q=80'),
+  ('Malang','Batu',CURRENT_DATE + 1,'12:00','12:45',65000,28,48,'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=700&q=80'),
+  ('Banyuwangi','Malang',CURRENT_DATE + 3,'06:00','12:00',180000,72,62,'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=700&q=80')
 ON CONFLICT (origin_city, destination_city, departure_date, departure_time) DO NOTHING;
 
 INSERT INTO public.vehicles (vehicle_name, vehicle_type, total_seats, amenities, image_url, price_modifier)

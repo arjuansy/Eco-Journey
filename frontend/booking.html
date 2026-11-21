@@ -28,6 +28,7 @@
     <div class="stepper" id="stepper" aria-label="Tahapan pemesanan">
       <span class="step active" aria-label="Pilih rute">1</span><span class="step" aria-label="Pilih armada">2</span><span class="step" aria-label="Pilih driver">3</span><span class="step" aria-label="Data dan kursi">4</span><span class="step" aria-label="Pembayaran">5</span><span class="step" aria-label="E-Ticket">6</span>
     </div>
+    <p id="bookingMessage" role="status" aria-live="polite" hidden></p>
     <section class="booking-step active" data-step="1" aria-labelledby="routeTitle">
       <div class="section-head" style="text-align:left"><span class="eyebrow">01 · MULAI DARI SINI</span><h2 id="routeTitle">Pilih rute &amp; jadwal</h2></div>
       <div class="grid-2">
@@ -75,6 +76,7 @@
             <label class="payment-option"><input type="radio" name="payment" value="QRIS"> QRIS</label>
             <label class="payment-option"><input type="radio" name="payment" value="E-Wallet"> E-Wallet</label>
           </div>
+          <p class="payment-help">Pilih metode untuk pencatatan, lalu unggah bukti pembayaran. Admin akan memeriksa bukti sebelum tiket diterbitkan.</p>
           <label class="proof-label">Unggah bukti pembayaran<input type="file" accept="image/jpeg,image/png,image/webp" id="proofFile"></label>
         </div>
         <aside class="card total-card"><span class="eyebrow">TOTAL PERJALANAN</span><h3>Total Pembayaran</h3><p class="summary-total" id="paymentTotal">Rp0</p><p>Selesaikan pembayaran sebelum jadwal berangkat. Simpan bukti agar mudah diperiksa.</p><span class="total-doodle" aria-hidden="true">✿</span></aside>

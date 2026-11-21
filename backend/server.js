@@ -8,6 +8,7 @@ const multer=require("multer");
 const path=require("path");
 const {randomBytes,randomUUID}=require("crypto");
 const {createClient}=require("@supabase/supabase-js");
+const QRCode=require("qrcode");
 
 const app=express();
 const PORT=Number(process.env.PORT)||3000;
@@ -26,7 +27,7 @@ app.use("/uploads",express.static(path.join(__dirname,"uploads")));
 
 const upload=multer({
   storage:multer.memoryStorage(),
-  limits:{fileSize:5*1024*1024},
+  limits:{fileSize:4*1024*1024},
   fileFilter(req,file,callback){
     if(!["image/jpeg","image/png","image/webp"].includes(file.mimetype)){
       const error=new Error("Bukti pembayaran harus berupa JPG, PNG, atau WebP.");
@@ -76,6 +77,25 @@ function bookingCode(){
   return `EJT-${randomBytes(4).toString("hex").toUpperCase()}`;
 }
 
+function jakartaDateTime(){
+  const parts=new Intl.DateTimeFormat("en-CA",{
+    timeZone:"Asia/Jakarta",
+    year:"numeric",
+    month:"2-digit",
+    day:"2-digit",
+    hour:"2-digit",
+    minute:"2-digit",
+    hourCycle:"h23"
+  }).formatToParts(new Date());
+  const values=Object.fromEntries(parts.map(part=>[part.type,part.value]));
+  return `${values.year}-${values.month}-${values.day}T${values.hour}:${values.minute}`;
+}
+
+function isPositiveInteger(value){
+  return (typeof value==="number"||(typeof value==="string"&&/^\d+$/.test(value)))&&
+    Number.isSafeInteger(Number(value))&&Number(value)>0;
+}
+
 app.get("/api/health",async(req,res)=>{
   if(!supabase)return res.status(503).json({status:"not_configured",message:"Isi konfigurasi Supabase di .env."});
   const {error}=await supabase.from("routes_schedules").select("id").limit(1);
@@ -116,10 +136,25 @@ app.post("/api/auth/login",async(req,res)=>{
 });
 
 app.get("/api/routes",async(req,res)=>{
-  const {data,error}=await supabase.from("routes_schedules").select("*").order("departure_date").order("departure_time");
+  const requestedDate=typeof req.query.date==="string"?req.query.date:"";
+  if(requestedDate&&!/^\d{4}-\d{2}-\d{2}$/.test(requestedDate)){
+    return res.status(400).json({message:"Format tanggal harus YYYY-MM-DD."});
+  }
+  const today=jakartaDateTime().slice(0,10);
+  let query=supabase.from("routes_schedules")
+    .select("*")
+    .gte("departure_date",today)
+    .order("departure_date")
+    .order("departure_time");
+  if(requestedDate)query=query.eq("departure_date",requestedDate);
+  const {data,error}=await query;
   assertSupabase(error);
   const city=typeof req.query.city==="string"?req.query.city.trim().toLowerCase():"";
-  res.json(city?data.filter(route=>route.origin_city.toLowerCase()===city||route.destination_city.toLowerCase()===city):data);
+  const currentDateTime=jakartaDateTime();
+  const upcoming=data.filter(route=>
+    `${route.departure_date}T${String(route.departure_time).slice(0,5)}`>=currentDateTime
+  );
+  res.json(city?upcoming.filter(route=>route.origin_city.toLowerCase()===city||route.destination_city.toLowerCase()===city):upcoming);
 });
 
 app.get("/api/vehicles",async(req,res)=>{
@@ -156,10 +191,39 @@ app.get("/api/seats",async(req,res)=>{
 });
 
 app.post("/api/bookings",authenticate,async(req,res)=>{
-  const {schedule_id,vehicle_id,driver_id,passenger_name,passenger_identity_number,passenger_phone,seat_number,total_amount}=req.body;
-  if(!schedule_id||!vehicle_id||!driver_id||!passenger_name||!passenger_identity_number||!passenger_phone||!seat_number||!Number.isFinite(Number(total_amount))||Number(total_amount)<0){
+  const {schedule_id,vehicle_id,driver_id,passenger_name,passenger_identity_number,passenger_phone,seat_number}=req.body;
+  const scheduleId=Number(schedule_id);
+  const vehicleId=Number(vehicle_id);
+  const driverId=Number(driver_id);
+  const seatText=String(seat_number??"");
+  const seatNumber=Number(seatText);
+  const passengerName=typeof passenger_name==="string"?passenger_name.trim():"";
+  const passengerIdentity=typeof passenger_identity_number==="string"?passenger_identity_number.trim():"";
+  const passengerPhone=typeof passenger_phone==="string"?passenger_phone.trim():"";
+  const phoneDigits=passengerPhone.replace(/\D/g,"");
+  if(!isPositiveInteger(schedule_id)||!isPositiveInteger(vehicle_id)||!isPositiveInteger(driver_id)||
+    !/^\d+$/.test(seatText)||!Number.isInteger(seatNumber)||seatNumber<1||!passengerName||passengerName.length>100||
+    !passengerIdentity||passengerIdentity.length>50||passengerPhone.length>20||
+    phoneDigits.length<10||phoneDigits.length>20){
     return res.status(400).json({message:"Data pemesanan belum lengkap atau tidak valid."});
   }
+  const [scheduleResult,vehicleResult,driverResult]=await Promise.all([
+    supabase.from("routes_schedules").select("id,base_price,departure_date,departure_time").eq("id",scheduleId).maybeSingle(),
+    supabase.from("vehicles").select("id,total_seats,price_modifier").eq("id",vehicleId).maybeSingle(),
+    supabase.from("drivers").select("id,remaining_trip_quota").eq("id",driverId).maybeSingle()
+  ]);
+  assertSupabase(scheduleResult.error);
+  assertSupabase(vehicleResult.error);
+  assertSupabase(driverResult.error);
+  const schedule=scheduleResult.data;
+  const vehicle=vehicleResult.data;
+  const driver=driverResult.data;
+  if(!schedule||!vehicle||!driver)return res.status(404).json({message:"Rute, armada, atau driver tidak ditemukan."});
+  if(`${schedule.departure_date}T${String(schedule.departure_time).slice(0,5)}`<jakartaDateTime()){
+    return res.status(409).json({message:"Jadwal keberangkatan sudah lewat."});
+  }
+  if(seatNumber>vehicle.total_seats)return res.status(400).json({message:"Nomor kursi tidak tersedia untuk armada ini."});
+  if(driver.remaining_trip_quota<1)return res.status(409).json({message:"Kuota perjalanan driver sudah habis."});
   const cutoff=new Date(Date.now()-15*60*1000).toISOString();
   const {error:expireError}=await supabase.from("bookings")
     .update({booking_status:"PAYMENT_FAILED"})
@@ -169,14 +233,14 @@ app.post("/api/bookings",authenticate,async(req,res)=>{
   const {data,error}=await supabase.from("bookings").insert({
     booking_code:bookingCode(),
     user_id:req.user.id,
-    schedule_id,
-    vehicle_id,
-    driver_id,
-    passenger_name,
-    passenger_identity_number,
-    passenger_phone,
-    seat_number:String(seat_number),
-    total_amount:Number(total_amount),
+    schedule_id:scheduleId,
+    vehicle_id:vehicleId,
+    driver_id:driverId,
+    passenger_name:passengerName,
+    passenger_identity_number:passengerIdentity,
+    passenger_phone:passengerPhone,
+    seat_number:String(seatNumber),
+    total_amount:Number(schedule.base_price)+Number(vehicle.price_modifier),
     booking_status:"PENDING_PAYMENT"
   }).select("*").single();
   if(error?.code==="23505")return res.status(409).json({message:"Kursi tersebut baru saja dipesan. Silakan pilih kursi lain."});
@@ -188,6 +252,10 @@ app.post("/api/payments",authenticate,upload.single("proof"),async(req,res)=>{
   const bookingId=Number(req.body.booking_id);
   if(!Number.isInteger(bookingId))return res.status(400).json({message:"booking_id tidak valid."});
   if(!req.file)return res.status(400).json({message:"Unggah bukti pembayaran terlebih dahulu."});
+  const allowedPaymentMethods=["Virtual Account","QRIS","E-Wallet"];
+  if(!allowedPaymentMethods.includes(req.body.payment_method)){
+    return res.status(400).json({message:"Metode pembayaran tidak valid."});
+  }
   const {data:booking,error:bookingError}=await supabase.from("bookings")
     .select("id,user_id,booking_status")
     .eq("id",bookingId)
@@ -213,7 +281,7 @@ app.post("/api/payments",authenticate,upload.single("proof"),async(req,res)=>{
 
   const {data:payment,error:paymentError}=await supabase.from("payments").insert({
     booking_id:booking.id,
-    payment_method:req.body.payment_method||"Transfer Bank",
+    payment_method:req.body.payment_method,
     proof_image_url:storagePath,
     payment_status:"PENDING"
   }).select("*").single();
@@ -251,7 +319,8 @@ app.get("/api/bookings/:id/eticket",authenticate,async(req,res)=>{
   const {data:ticket,error}=await supabase.from("e_tickets").select("*").eq("booking_id",booking.id).maybeSingle();
   assertSupabase(error);
   if(!ticket)return res.status(404).json({message:"E-Ticket belum diterbitkan."});
-  res.json(ticket);
+  const qrCode=await QRCode.toDataURL(ticket.qr_code_data||ticket.ticket_number,{width:180,margin:1});
+  res.json({...ticket,qr_code:qrCode});
 });
 
 app.get("/api/admin/payments",authenticate,requireAdmin,async(req,res)=>{
@@ -296,8 +365,12 @@ app.use((error,req,res,next)=>{
   res.status(status).json({message:error.message||"Terjadi kesalahan pada server."});
 });
 
-app.listen(PORT,()=>{
-  console.log(`Eco-Journey running at http://localhost:${PORT}`);
-  if(!supabase)console.warn("Supabase belum dikonfigurasi. API akan merespons 503 sampai file .env diisi.");
-  if(!JWT_SECRET)console.warn("JWT_SECRET belum dikonfigurasi. Endpoint API membutuhkan file .env.");
-});
+if(require.main===module){
+  app.listen(PORT,()=>{
+    console.log(`Eco-Journey running at http://localhost:${PORT}`);
+    if(!supabase)console.warn("Supabase belum dikonfigurasi. API akan merespons 503 sampai file .env diisi.");
+    if(!JWT_SECRET)console.warn("JWT_SECRET belum dikonfigurasi. Endpoint API membutuhkan file .env.");
+  });
+}
+
+module.exports=app;

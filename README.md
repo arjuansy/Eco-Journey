@@ -15,3 +15,12 @@
 6. Jalankan `npm install`, lalu `npm start`. Periksa koneksi melalui `http://localhost:3000/api/health`.
 
 Backend memakai Supabase untuk data aplikasi dan Supabase Storage untuk bukti pembayaran. Tabel memakai Row Level Security; akses tabel dilakukan oleh Express melalui service role key yang disimpan di server.
+
+## Deploy ke Vercel
+
+1. Import repository ini sebagai project Vercel dan atur **Root Directory** ke `Travel Shiva/eco-journey-ticket` (folder ini berada di dalam repository).
+2. Tambahkan `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `JWT_SECRET`, dan `SUPABASE_STORAGE_BUCKET` di **Project Settings → Environment Variables**. Jangan masukkan service-role key ke frontend.
+3. Jalankan deploy. `npm run build` menyalin frontend ke `public/frontend` agar aset disajikan dari CDN; Express diekspor dari `index.js` sebagai API.
+4. Buka `/api/health` pada domain deployment dan pastikan respons berstatus `ok`. Pastikan bucket Storage `payment-proofs` tersedia dan private.
+
+Secara lokal, API tetap menggunakan `http://localhost:3000/api`. Pada deployment, frontend memakai `/api` pada domain yang sama sehingga tidak bergantung pada `localhost` pengunjung.

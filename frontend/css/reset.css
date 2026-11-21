@@ -5,3 +5,5 @@ ul{padding:0;list-style:none}
 button,input,select,textarea{font:inherit}
 button,a{cursor:pointer}
 img{max-width:100%;display:block}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid rgba(22,142,153,.55);outline-offset:3px}

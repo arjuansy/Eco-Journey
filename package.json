@@ -2,17 +2,22 @@
   "name": "eco-journey-ticket",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
+    "build": "node scripts/prepare-vercel.js",
     "start": "node backend/server.js",
     "dev": "node backend/server.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.57.4",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
-    "@supabase/supabase-js": "^2.57.4",
-    "dotenv": "^16.6.1"
+    "qrcode": "^1.5.4"
   }
 }

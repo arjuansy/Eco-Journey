@@ -19,15 +19,15 @@
       <h1 id="authTitle">Senang bertemu kamu!</h1>
       <p class="auth-caption">Masuk dulu, lalu kita cari cerita perjalananmu.</p>
       <div class="auth-tabs" role="tablist" aria-label="Pilih akses akun">
-        <button class="active" type="button" role="tab" aria-selected="true" data-auth-tab="login">Masuk</button>
-        <button type="button" role="tab" aria-selected="false" data-auth-tab="signup">Daftar Akun</button>
+        <button id="loginTab" class="active" type="button" role="tab" aria-selected="true" aria-controls="loginForm" data-auth-tab="login">Masuk</button>
+        <button id="signupTab" type="button" role="tab" aria-selected="false" aria-controls="signupForm" data-auth-tab="signup">Daftar Akun</button>
       </div>
-      <form id="loginForm" class="form-grid">
+      <form id="loginForm" class="form-grid" role="tabpanel" aria-labelledby="loginTab">
         <label>Email<input type="email" name="email" required placeholder="nama@email.com" autocomplete="email"></label>
         <label>Password<input type="password" name="password" required minlength="6" placeholder="Minimal 6 karakter" autocomplete="current-password"></label>
         <button class="btn btn-primary" type="submit">Masuk Sekarang <span aria-hidden="true">→</span></button>
       </form>
-      <form id="signupForm" class="form-grid" hidden>
+      <form id="signupForm" class="form-grid" role="tabpanel" aria-labelledby="signupTab" hidden>
         <label>Nama Lengkap<input name="full_name" required autocomplete="name"></label>
         <label>Email<input type="email" name="email" required autocomplete="email"></label>
         <label>No. WhatsApp<input name="phone_number" required minlength="10" autocomplete="tel"></label>

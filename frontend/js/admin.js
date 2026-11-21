@@ -30,10 +30,12 @@
     try{
       const payments=await API.request("/admin/payments");
       message.textContent="";
+      document.getElementById("adminStats").hidden=false;
+      document.getElementById("payments").hidden=false;
       document.getElementById("adminStats").innerHTML=`<div class="card"><span class="badge">Transaksi</span><h2>${payments.length}</h2></div><div class="card"><span class="badge">Menunggu</span><h2>${payments.filter(payment=>payment.payment_status==="PENDING").length}</h2></div><div class="card"><span class="badge">Terverifikasi</span><h2>${payments.filter(payment=>payment.payment_status==="SUCCESS").length}</h2></div>`;
       document.getElementById("pendingCount").textContent=`${payments.filter(payment=>payment.payment_status==="PENDING").length} menunggu`;
       const table=document.getElementById("paymentTable");
-      table.innerHTML=payments.map(payment=>`<tr><td>${escapeHtml(payment.booking_code)}</td><td>${escapeHtml(payment.passenger_name)}</td><td>${escapeHtml(payment.payment_method)}</td><td><span class="badge">${escapeHtml(payment.payment_status)}</span></td><td><button class="btn" data-preview="${payment.id}" style="padding:7px 12px;border:1px solid var(--color-border)">Lihat</button></td><td>${payment.payment_status==="PENDING"?`<button class="btn btn-primary" data-action="approve" data-id="${payment.id}" style="padding:7px 12px">Terima</button> <button class="btn" data-action="reject" data-id="${payment.id}" style="padding:7px 12px;border:1px solid var(--color-danger);color:var(--color-danger)">Tolak</button>`:"—"}</td></tr>`).join("");
+      table.innerHTML=payments.length?payments.map(payment=>`<tr><td>${escapeHtml(payment.booking_code)}</td><td>${escapeHtml(payment.passenger_name)}</td><td>${escapeHtml(payment.payment_method)}</td><td><span class="badge">${escapeHtml(payment.payment_status)}</span></td><td><button class="btn" data-preview="${payment.id}" style="padding:7px 12px;border:1px solid var(--color-border)">Lihat</button></td><td>${payment.payment_status==="PENDING"?`<button class="btn btn-primary" data-action="approve" data-id="${payment.id}" style="padding:7px 12px">Terima</button> <button class="btn" data-action="reject" data-id="${payment.id}" style="padding:7px 12px;border:1px solid var(--color-danger);color:var(--color-danger)">Tolak</button>`:"—"}</td></tr>`).join(""):'<tr><td colspan="6">Belum ada pembayaran.</td></tr>';
       table.querySelectorAll("[data-preview]").forEach((button,index)=>button.addEventListener("click",()=>{
         const proof=payments[index].proof_image_url;
         const preview=document.getElementById("proofPreview");
