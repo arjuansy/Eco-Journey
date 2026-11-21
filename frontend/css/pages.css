@@ -61,7 +61,8 @@
 .auth-tabs button {border-radius:999px;color:#72837d}
 .auth-tabs button.active {border:0;background:#168e99;color:#fff;box-shadow:0 5px 12px rgba(22,142,153,.2)}
 .auth-card .form-grid {gap:13px}
-.auth-card form[hidden] {display:none}
+#loginForm[hidden],
+#signupForm[hidden] {display:none!important}
 .auth-card .form-grid label {color:#49635e;font-size:12px}
 .auth-card .form-grid input {height:44px;border:1px solid #dfece7;border-radius:12px;background:#fbfdfb}
 .auth-card .form-grid input:focus {border-color:#57b2aa;outline:3px solid rgba(87,178,170,.15)}

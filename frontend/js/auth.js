@@ -6,11 +6,17 @@ document.querySelectorAll("[data-auth-tab]").forEach(tab=>tab.addEventListener("
   tab.classList.add("active");
   tab.setAttribute("aria-selected","true");
   const signup=tab.dataset.authTab==="signup";
-  document.getElementById("loginForm").hidden=signup;
-  document.getElementById("signupForm").hidden=!signup;
+  const loginForm=document.getElementById("loginForm");
+  const signupForm=document.getElementById("signupForm");
+  loginForm.hidden=signup;
+  loginForm.style.display=signup?"none":"grid";
+  signupForm.hidden=!signup;
+  signupForm.style.display=signup?"grid":"none";
   document.getElementById("authMessage").textContent="";
   document.getElementById("authMessage").dataset.state="";
 }));
+
+document.querySelector('[data-auth-tab="login"]').click();
 
 function getReturnLocation(){
   const requested=new URLSearchParams(location.search).get("next");
