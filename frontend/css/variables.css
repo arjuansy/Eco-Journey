@@ -1,0 +1,10 @@
+:root {
+  --color-primary:#549E39; --color-primary-hover:#43822C; --color-secondary-mint:#EDF5EA;
+  --color-sky-top:#D9F0FA; --color-sky-bottom:#F4FAFD; --color-surface:#fff;
+  --color-text-dark:#222823; --color-text-muted:#647067; --color-accent-warm:#F4A261;
+  --color-danger:#E63946; --color-lime:#7CB342; --color-border:#E3EAE4;
+  --font-heading:"Plus Jakarta Sans",sans-serif; --font-body:"Inter",sans-serif;
+  --radius-sm:10px; --radius-md:16px; --radius-lg:24px; --radius-pill:9999px;
+  --shadow-sm:0 8px 24px rgba(34,40,35,.08); --shadow-md:0 16px 44px rgba(34,40,35,.12);
+  --container:1180px;
+}

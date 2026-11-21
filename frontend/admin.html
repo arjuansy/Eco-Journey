@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin - Eco-Journey</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="admin-page">
+  <main class="admin-shell">
+    <aside class="sidebar">
+      <a class="brand" href="index.html"><span class="brand-mark">⌁</span><span>ECO-JOURNEY<small>RUANG PENGELOLA</small></span></a>
+      <button class="admin-menu-toggle" id="adminMenuToggle" type="button" aria-expanded="false" aria-controls="adminNav" aria-label="Buka menu navigasi">
+        <span class="burger-line" aria-hidden="true"></span><span class="burger-line" aria-hidden="true"></span><span class="burger-line" aria-hidden="true"></span>
+        <span class="admin-menu-label" id="adminMenuLabel">Validasi Pembayaran</span>
+      </button>
+      <nav id="adminNav" aria-label="Navigasi admin">
+        <a class="active" href="#payments"><span aria-hidden="true">✿</span> Validasi Pembayaran</a>
+        <a href="#routes"><span aria-hidden="true">⌖</span> Rute &amp; Jadwal</a>
+        <a href="#vehicles"><span aria-hidden="true">🚌</span> Armada</a>
+        <a href="#drivers"><span aria-hidden="true">☘</span> Kuota Driver</a>
+      </nav>
+      <a class="sidebar-home" href="index.html">← Kembali ke beranda</a>
+    </aside>
+    <section class="admin-main">
+      <div class="admin-welcome"><div><span class="eyebrow">PANEL PENGELOLA · ECO-JOURNEY</span><h1>Halo, Admin! <span aria-hidden="true">✦</span></h1><p>Semua perjalanan baik dimulai dari persiapan yang rapi.</p></div><div class="admin-mascot" aria-hidden="true">🚌<small>vroom!</small></div></div>
+      <p id="adminMessage" role="status" aria-live="polite"></p>
+      <div class="grid-3" id="adminStats"></div>
+      <section id="payments" class="card admin-payments">
+        <div class="admin-section-heading"><div><span class="eyebrow">PERLU PERHATIANMU</span><h2>Validasi Pembayaran</h2></div><span class="badge" id="pendingCount">0 menunggu</span></div>
+        <div class="table-wrap"><table class="table"><thead><tr><th>Kode</th><th>Penumpang</th><th>Metode</th><th>Status</th><th>Bukti</th><th>Aksi</th></tr></thead><tbody id="paymentTable"></tbody></table></div>
+      </section>
+      <div class="admin-note"><span aria-hidden="true">☘</span> Terima kasih sudah membantu perjalanan berjalan lancar.</div>
+    </section>
+  </main>
+  <dialog id="proofModal" class="proof-modal"><div class="proof-modal-inner"><span class="eyebrow">BUKTI PEMBAYARAN</span><h3>Periksa dengan teliti ya!</h3><div id="proofPreview" class="proof-preview">Bukti pembayaran belum diunggah.</div><button class="btn btn-primary" onclick="this.closest('dialog').close()">Selesai melihat</button></div></dialog>
+  <script src="js/api.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

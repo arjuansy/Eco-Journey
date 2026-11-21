@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Masuk - Eco-Journey</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <main class="auth-page">
+    <span class="auth-doodle auth-doodle-one" aria-hidden="true">✦</span>
+    <span class="auth-doodle auth-doodle-two" aria-hidden="true">✿</span>
+    <section class="auth-card" aria-labelledby="authTitle">
+      <a class="brand" href="index.html"><span class="brand-mark">⌁</span><span>ECO-JOURNEY<small>JELAJAH DENGAN HATI</small></span></a>
+      <h1 id="authTitle">Senang bertemu kamu!</h1>
+      <p class="auth-caption">Masuk dulu, lalu kita cari cerita perjalananmu.</p>
+      <div class="auth-tabs" role="tablist" aria-label="Pilih akses akun">
+        <button class="active" type="button" role="tab" aria-selected="true" data-auth-tab="login">Masuk</button>
+        <button type="button" role="tab" aria-selected="false" data-auth-tab="signup">Daftar Akun</button>
+      </div>
+      <form id="loginForm" class="form-grid">
+        <label>Email<input type="email" name="email" required placeholder="nama@email.com" autocomplete="email"></label>
+        <label>Password<input type="password" name="password" required minlength="6" placeholder="Minimal 6 karakter" autocomplete="current-password"></label>
+        <button class="btn btn-primary" type="submit">Masuk Sekarang <span aria-hidden="true">→</span></button>
+      </form>
+      <form id="signupForm" class="form-grid" hidden>
+        <label>Nama Lengkap<input name="full_name" required autocomplete="name"></label>
+        <label>Email<input type="email" name="email" required autocomplete="email"></label>
+        <label>No. WhatsApp<input name="phone_number" required minlength="10" autocomplete="tel"></label>
+        <label>Password<input type="password" name="password" required minlength="6" autocomplete="new-password"></label>
+        <button class="btn btn-primary" type="submit">Buat Akun <span aria-hidden="true">✦</span></button>
+      </form>
+      <p id="authMessage" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

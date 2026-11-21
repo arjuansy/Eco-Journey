@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Pesan Tiket - Eco-Journey</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/booking-flow.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="booking-page">
+  <header class="site-header">
+    <nav class="nav container" aria-label="Navigasi pemesanan">
+      <a class="brand" href="index.html"><span class="brand-mark">⌁</span><span>ECO-JOURNEY<small>JELAJAH DENGAN HATI</small></span></a>
+      <a class="btn btn-outline" href="auth.html">Masuk / Akun <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+  <main class="container booking-shell">
+    <div class="booking-hero">
+      <span class="eyebrow">PEMESANAN TIKET · LANGKAH 01</span>
+      <h1>Atur perjalananmu</h1>
+      <p>Pelan-pelan saja, kami bantu siapkan perjalanan yang menyenangkan.</p>
+      <span class="booking-hero-art" aria-hidden="true">🚌</span>
+    </div>
+    <div class="stepper" id="stepper" aria-label="Tahapan pemesanan">
+      <span class="step active" aria-label="Pilih rute">1</span><span class="step" aria-label="Pilih armada">2</span><span class="step" aria-label="Pilih driver">3</span><span class="step" aria-label="Data dan kursi">4</span><span class="step" aria-label="Pembayaran">5</span><span class="step" aria-label="E-Ticket">6</span>
+    </div>
+    <section class="booking-step active" data-step="1" aria-labelledby="routeTitle">
+      <div class="section-head" style="text-align:left"><span class="eyebrow">01 · MULAI DARI SINI</span><h2 id="routeTitle">Pilih rute &amp; jadwal</h2></div>
+      <div class="grid-2">
+        <label>Tanggal keberangkatan<input type="date" id="departureDate"></label>
+        <input id="routeFilter" aria-label="Cari kota" placeholder="⌕  Cari kota asal atau tujuan...">
+      </div>
+      <div class="route-list" id="routeList" style="margin-top:18px"></div>
+    </section>
+    <section class="booking-step" data-step="2" aria-labelledby="vehicleTitle">
+      <div class="section-head" style="text-align:left"><span class="eyebrow">02 · PILIH YANG NYAMAN</span><h2 id="vehicleTitle">Pilih armada</h2></div>
+      <div class="grid-2" id="vehicleList"></div>
+    </section>
+    <section class="booking-step" data-step="3" aria-labelledby="driverTitle">
+      <div class="section-head" style="text-align:left"><span class="eyebrow">03 · DRIVER PILIHAN</span><h2 id="driverTitle">Pilih driver</h2></div>
+      <div class="grid-2" id="driverList"></div>
+    </section>
+    <section class="booking-step" data-step="4" aria-label="Data penumpang dan kursi">
+      <div class="booking-layout">
+        <div class="card">
+          <span class="eyebrow">04 · SIAPA YANG IKUT?</span>
+          <h2 style="margin:8px 0 16px">Data penumpang</h2>
+          <form class="form-grid" id="passengerForm">
+            <label>Nama Penumpang<input name="name" required autocomplete="name"></label>
+            <label>Nomor Identitas (KTP/SIM)<input name="identity" required></label>
+            <label>Nomor Telepon / WhatsApp<input name="phone" required minlength="10" autocomplete="tel"></label>
+            <label>Catatan Penjemputan<textarea name="pickup" rows="3" placeholder="Contoh: tunggu di depan minimarket"></textarea></label>
+          </form>
+        </div>
+        <div class="card">
+          <span class="eyebrow">PILIH TEMPAT FAVORITMU</span>
+          <h3 style="text-align:center;margin:8px 0 14px">Denah Kursi</h3>
+          <div class="seat-grid" id="seatGrid"></div>
+          <div class="seat-legend"><span class="badge">Tersedia</span><span class="badge selected-legend">Dipilih</span><span class="badge booked-legend">Terisi</span></div>
+        </div>
+      </div>
+    </section>
+    <section class="booking-step" data-step="5" aria-labelledby="paymentTitle">
+      <div class="booking-layout">
+        <div class="card">
+          <span class="eyebrow">05 · HAMPIR BERANGKAT!</span>
+          <h2 id="paymentTitle" style="margin:8px 0 0">Ringkasan &amp; Pembayaran</h2>
+          <div class="summary-list" id="bookingSummary" style="margin:20px 0"></div>
+          <div class="payment-options" id="paymentOptions">
+            <label class="payment-option selected"><input type="radio" name="payment" value="Virtual Account" checked> Transfer Bank / Virtual Account</label>
+            <label class="payment-option"><input type="radio" name="payment" value="QRIS"> QRIS</label>
+            <label class="payment-option"><input type="radio" name="payment" value="E-Wallet"> E-Wallet</label>
+          </div>
+          <label class="proof-label">Unggah bukti pembayaran<input type="file" accept="image/jpeg,image/png,image/webp" id="proofFile"></label>
+        </div>
+        <aside class="card total-card"><span class="eyebrow">TOTAL PERJALANAN</span><h3>Total Pembayaran</h3><p class="summary-total" id="paymentTotal">Rp0</p><p>Selesaikan pembayaran sebelum jadwal berangkat. Simpan bukti agar mudah diperiksa.</p><span class="total-doodle" aria-hidden="true">✿</span></aside>
+      </div>
+    </section>
+    <section class="booking-step" data-step="6" aria-label="Status pembayaran dan E-Ticket">
+      <div class="status-banner" id="paymentStatus"><strong>Menunggu validasi admin</strong><br><span>Pembayaran Anda sedang diperiksa.</span></div>
+      <div class="print-ticket" id="ticketArea"></div>
+    </section>
+    <div class="booking-actions no-print"><button class="btn" id="prevStep">← Kembali</button><button class="btn btn-primary" id="nextStep">Lanjutkan <span aria-hidden="true">→</span></button></div>
+    <div class="booking-footnote"><span aria-hidden="true">☘</span> Perjalanan nyaman, kenangan yang berkesan.</div>
+  </main>
+  <script src="js/api.js"></script>
+  <script src="js/booking-flow.js"></script>
+</body>
+</html>

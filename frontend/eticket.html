@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>E-Ticket - Eco-Journey</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/booking-flow.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="eticket-page">
+  <main class="eticket-shell">
+    <header class="eticket-header">
+      <a class="brand" href="index.html"><span class="brand-mark">⌁</span><span>ECO-JOURNEY</span></a>
+      <a class="text-link" href="index.html">Kembali ke beranda <b>↗</b></a>
+    </header>
+    <span class="eyebrow" style="display:block;text-align:center">PETUALANGANMU SUDAH SIAP</span>
+    <h1 class="eticket-title">Tiket kecil untuk cerita besar!</h1>
+    <p class="eticket-intro">Simpan tiket ini dan tunjukkan kepada driver saat keberangkatan.</p>
+    <div id="ticketArea" aria-live="polite"></div>
+    <div class="eticket-actions"><button class="btn btn-primary no-print" onclick="window.print()">Cetak / Simpan E-Ticket <span aria-hidden="true">↓</span></button></div>
+  </main>
+  <script src="js/api.js"></script>
+  <script src="js/booking-flow.js"></script>
+</body>
+</html>
